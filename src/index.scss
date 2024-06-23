@@ -1,6 +1,10 @@
 * {
   box-sizing: border-box;
 }
+table {
+  margin: 0;
+  color: none;
+}
 p {
   margin: 0;
   padding: 0;
@@ -22,6 +26,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #232323;
   font-size: 16px;
+  color: #ccc; 
 }
 
 code {

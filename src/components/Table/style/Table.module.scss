@@ -1,0 +1,47 @@
+/* Сброс стилей таблицы */
+.tableWrapper {
+  & table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+
+    thead {
+      th {
+        color: #ccc;
+        padding: 10px;
+      }
+      th.level {
+        width: auto;
+      }
+
+      th.name {
+        width: 40%;
+      }
+
+      th.salary,
+      th.equipment,
+      th.overhead,
+      th.profit {
+        width: 15%;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid #333;
+      }
+
+      td {
+        padding: 10px;
+      }
+
+      tr:last-child {
+        border-bottom: none;
+      }
+    //   td {
+    //     padding: 10px;
+    //     border: 1px solid #333;
+    //   }
+    }
+  }
+}
