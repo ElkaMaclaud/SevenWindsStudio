@@ -1,0 +1,27 @@
+.headerWrapper {
+    padding: 10px 0;
+    padding-bottom: 0;
+    display: flex;
+    gap: 30px;
+    border-bottom: 1px solid #333;
+    & * {
+        cursor: pointer;
+    }
+    & svg {
+       margin-top: 5px; 
+    }
+    & div {
+        height: 100%;
+        color: #ccc
+    }
+    & div:nth-of-type(1) {
+        color: #eee;
+    }
+    & div:nth-of-type(1)::after {
+        content: '';
+        display: block;
+        margin-top: 10px;
+        border-bottom: 3px solid #eee; 
+    }
+    
+}

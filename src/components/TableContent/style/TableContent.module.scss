@@ -1,0 +1,16 @@
+.tableWrapper {
+  width: 100%;
+  width: 100%;
+  color: #ccc;
+  border-bottom: 1px solid #333;
+  .tableHeader {
+    display: flex;
+
+    .title {
+      padding: 10px;
+      height: 48px;
+      max-height: 48px;
+      border-right: 1px solid #333;
+    }
+  }
+}

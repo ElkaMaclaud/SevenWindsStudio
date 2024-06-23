@@ -1,0 +1,36 @@
+.sidebarWrapper {
+  width: 100%;
+  color: #eee;
+
+  .sidebarHeader {
+    height: 49px;
+    max-height: 49px;
+    color: #ccc;
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+
+    & p {
+        line-height: .1;
+    }
+    & p:nth-of-type(2) {
+        font-size: 12px;
+        margin-top: -5px;
+    }
+  }
+  .sidebarContent {
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .projects {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+}
