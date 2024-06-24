@@ -10,6 +10,7 @@ function App() {
   const dispatch = useAppDispatch()
   useEffect(() => {
     dispatch(GET_DATA())
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   return (

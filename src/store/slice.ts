@@ -1,41 +1,44 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from "./Store";
+import { OutlayRowRequest } from "../type/ProjectType";
 
 const ID = {"id":128698, "rowName":"d7c41e01-8b92-499c-b029-c9e95980064e"}
 export interface ICountLessons {
   [key: string]: number;
 }
-export interface IData {
-    name: string,
-    amount: number,
-    category: string,
-  
-}
-const mockOutlayRowRequest = {
-
-  name: "Новая строка",
-
-  amount: 100,
-
-  category: "Расходы",
-
-
-};
 
 export interface IInitialState {
   success: boolean;
-  listLessons: ICountLessons;
+  data: OutlayRowRequest[],
   loading: boolean;
-  meetTheUser: boolean,
 }
 const state: IInitialState = {
   success: false,
-  listLessons: {},
+  data: [],
   loading: true,
-  meetTheUser: true
 };
+  // fetch(
+  //     " http://185.244.172.108:8081/v1/outlay-rows/entity/create",
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   )
+  //   .then(response => {
+  //     if (!response.ok) {
+  //       throw new Error('Network response was not ok');
+  //     }
+  //     return response.json();
+  //   })
+  //   .then(data => {
+  //     console.log(data);
+  //   })
+  //   .catch(error => {
+  //     console.error('Fetch error:', error);
+  //   });
 export const GET_DATA = createAsyncThunk<
-  { success: boolean; message: string },
+  OutlayRowRequest[],
   undefined,
   {
     rejectValue: string;
@@ -52,25 +55,21 @@ export const GET_DATA = createAsyncThunk<
       }
     );
     const data = await response.json();
-    if (data.success) {
-      return data;
-    } else {
-      throw new Error(data.message);
-    }
+    return data;
   } catch (error) {
     return rejectWithValue(`${error}`);
   }
 });
 export const CREATE_ROW = createAsyncThunk<
   { success: boolean; message: string },
-  { eID: number; requestData: IData }, 
+  {requestData: OutlayRowRequest}, 
   {
     rejectValue: string;
   }
->("page/CREATE_ROW", async ({ eID, requestData }, { rejectWithValue }) => { 
+>("page/CREATE_ROW", async ({ requestData }, { rejectWithValue }) => { 
   try {
     const response = await fetch(
-      `http://185.244.172.108:8081/v1/outlay-rows/entity/${eID}/row/create`, 
+      `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/create`, 
       {
         method: "POST", 
         headers: {
@@ -80,25 +79,21 @@ export const CREATE_ROW = createAsyncThunk<
       }
     );
     const data = await response.json();
-    if (data.success) {
-      return data;
-    } else {
-      throw new Error(data.message);
-    }
+    return data;
   } catch (error) {
     return rejectWithValue(`${error}`);
   }
 });
 export const UPDATE_ROW = createAsyncThunk<
   { success: boolean; message: string },
-  { eID: number; rID: number; requestData: IData },
+  { rID: number | null; requestData: OutlayRowRequest },
   {
     rejectValue: string;
   }
->("page/UPDATE_ROW", async ({ eID, rID, requestData }, { rejectWithValue }) => { 
+>("page/UPDATE_ROW", async ({ rID, requestData }, { rejectWithValue }) => { 
   try {
     const response = await fetch(
-      `http://185.244.172.108:8081/v1/outlay-rows/entity/${eID}/row/${rID}/update`, 
+      `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/${rID}/update`, 
       {
         method: "POST", 
         headers: {
@@ -108,11 +103,7 @@ export const UPDATE_ROW = createAsyncThunk<
       }
     );
     const data = await response.json();
-    if (data.success) {
-      return data;
-    } else {
-      throw new Error(data.message);
-    }
+    return data;
   } catch (error) {
     return rejectWithValue(`${error}`);
   }
@@ -120,14 +111,14 @@ export const UPDATE_ROW = createAsyncThunk<
 
 export const DELETE_ROW = createAsyncThunk<
   { success: boolean; message: string },
-  { eID: number; rID: number }, 
+  { rID: number }, 
   {
     rejectValue: string;
   }
->("page/DELETE_ROW", async ({ eID, rID }, { rejectWithValue }) => { 
+>("page/DELETE_ROW", async ({ rID }, { rejectWithValue }) => { 
   try {
     const response = await fetch(
-      `http://185.244.172.108:8081/v1/outlay-rows/entity/${eID}/row/${rID}/delete`, 
+      `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/${rID}/delete`, 
       {
         method: "DELETE", 
         headers: {
@@ -136,11 +127,7 @@ export const DELETE_ROW = createAsyncThunk<
       }
     );
     const data = await response.json();
-    if (data.success) {
-      return data;
-    } else {
-      throw new Error(data.message);
-    }
+    return data;
   } catch (error) {
     return rejectWithValue(`${error}`);
   }
@@ -155,55 +142,30 @@ const slice = createSlice({
     SET_LOADING: (state, action) => {
       state.loading = action.payload;
     },
-    SET_MEET_THE_USER: (state, action) => {
-      state.meetTheUser = action.payload;
-    },
   },
   extraReducers: (builder) => {
-    builder.addCase(GET_DATA.fulfilled, (state, action) => {
-      console.log("?///////////", action.payload)
+    builder.addCase(GET_DATA.pending, (state, action) => {
       return {
         ...state,
-        success: true,
-        message: action.payload.message,
+        loading: true,
       };
     });
-    builder.addCase(GET_DATA.rejected, (state, action) => {
+    builder.addCase(GET_DATA.fulfilled, (state, action) => {
       return {
         ...state,
-        success: false,
-        message: action.payload as string,
+        loading: false,
+        data: action.payload,
+      };
+    });
+    builder.addCase(GET_DATA.rejected, (state) => {
+      return {
+        ...state,
+        loading: true,
       };
     });
   },
 });
 
-export const { SET_LOADING,  SET_MEET_THE_USER } =
-  slice.actions;
+export const { SET_LOADING } = slice.actions;
 export default slice.reducer;
 
-//   fetch(
-  //     " http://185.244.172.108:8081/v1/outlay-rows/entity/create",
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       // body: JSON.stringify({
-  //       //   email,
-  //       //   password,
-  //       // }),
-  //     }
-  //   )
-  //   .then(response => {
-  //     if (!response.ok) {
-  //       throw new Error('Network response was not ok');
-  //     }
-  //     return response.json();
-  //   })
-  //   .then(data => {
-  //     console.log(data);
-  //   })
-  //   .catch(error => {
-  //     console.error('Fetch error:', error);
-  //   });

@@ -16,9 +16,9 @@ const Sidebar = () => {
       </div>
       <div className={style.sidebarContent}>
         {projects.map((item)=> {
-            return <div key={Math.random().toString(36).substring(2, 15)} className={style.projects}>
+            return <div key={Math.random().toString(36).substring(2, 15)} className={item.active ? style.projects_active : style.projects}>
                 <Dashboard />
-                <div>{item}</div>
+                <div>{item.name}</div>
             </div>
         })}
       </div>
