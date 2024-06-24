@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useState } from "react";
+import React, { KeyboardEvent, useEffect, useState } from "react";
 import style from "./style/Table.module.scss";
 import Spinner from "../Spinner/Spinner";
 import { useAppDispatch, useAppSelector } from "../../store/reduxHooks";
@@ -14,10 +14,13 @@ const Table = () => {
   const [list, setList] = useState(() => generateArray(data))
   const [hover, setHover] = useState(false);
   const dispatch = useAppDispatch()
+  useEffect(() => {
+    setList(() => generateArray(data))
+  }, [data])
 
   const createOrUpdateRow = (e: KeyboardEvent<HTMLTableRowElement>, item: OutlayRowRequest) => {
-    dispatch(CREATE_ROW({requestData: item}))
-    dispatch(UPDATE_ROW({rID: item.parentId, requestData: item}))
+    // dispatch(CREATE_ROW({requestData: item}))
+    // dispatch(UPDATE_ROW({rID: item.parentId, requestData: item}))
   }
 
     
@@ -26,14 +29,15 @@ const Table = () => {
     dispatch(DELETE_ROW({rID: id}))
   }
   const editMode = (item: OutlayRowRequest, create?: boolean) => {
-    setList((prev) => updateData(prev, item, create))
+    console.log("editMode", list, create)
+    setList(() => generateArray(updateData(data, item, create)))
   }
 
   const createCalendarRender = () => {   
     return list.map((item) => {
       if(item.edit) {
         return (
-          <tr key={item.id} onKeyDown={(e) => createOrUpdateRow(e, item) }>
+          <tr key={item.id} onKeyDown={(e) => createOrUpdateRow(e, item)} className={style.editTd}>
             <td
               style={{ paddingLeft: `${20 + (item.padding || 0)}px` }}
               className={style.level}
@@ -55,7 +59,7 @@ const Table = () => {
         );
       }
       return (
-        <tr key={item.id} onKeyDown={(e) => createOrUpdateRow(e, item) }>
+        <tr key={item.id} onKeyDown={(e) => createOrUpdateRow(e, item)}  onDoubleClick={() => editMode(item)}>
           <td
             style={{ paddingLeft: `${20 + (item.padding || 0)}px` }}
             className={style.level}

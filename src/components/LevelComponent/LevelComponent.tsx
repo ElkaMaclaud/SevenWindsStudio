@@ -21,7 +21,7 @@ const LevelComponent: FC<{
             className={style.borderParent}
           >
             <div className={!hover ? style.editIcon : style.editIcon_hover}>
-              <div onClick={() =>editMode(item, true)} onDoubleClick={() => editMode(item)}>
+              <div onClick={() => editMode(item, true)}>
                 <EditPage />
               </div>
               {hover && (
@@ -47,7 +47,7 @@ const LevelComponent: FC<{
             className={style.borderParent}
           >
             <div className={!hover ? style.editIcon : style.editIcon_hover}>
-            <div onClick={() =>editMode(item, true)} onDoubleClick={() => editMode(item)}>
+            <div onClick={() =>editMode(item, true)}>
                 <EditPage />
               </div>
               {hover && (
@@ -75,7 +75,7 @@ const LevelComponent: FC<{
           className={style.borderParent}
         >
           <div className={!hover ? style.editIcon : style.editIcon_hover}>
-          <div onClick={() =>editMode(item, true)} onDoubleClick={() => editMode(item)}>
+          <div onClick={() =>editMode(item, true)}>
               <EditPage />
             </div>
             {hover && (
@@ -102,7 +102,7 @@ const LevelComponent: FC<{
           className={style.borderParent}
         >
           <div className={!hover ? style.editIcon : style.editIcon_hover}>
-          <div onClick={() =>editMode(item, true)} onDoubleClick={() => editMode(item)}>
+          <div onClick={() =>editMode(item, true)}>
               <EditPage />
             </div>
             {hover && (

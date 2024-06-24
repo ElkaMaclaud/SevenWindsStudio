@@ -7,9 +7,9 @@
 
     thead {
       th {
+        padding: 20px;
         color: #aaa;
         text-align: start;
-        padding: 20px;
       }
       th.level {
         width: 10%;
@@ -29,17 +29,38 @@
 
     tbody {
       tr {
-        border-bottom: 1px solid #333;
-      }
-
-      td {
+        cursor: pointer;
+        border-bottom: 1px solid #333;  
+        
+        &:last-of-type {
+          border-bottom: none;
+        }
+        td {
         padding: 20px;
         color: #eee;
+      } 
+
+        &.editTd {
+          padding: 0;
+
+          &.td {
+            padding: 0;
+            vertical-align: middle;
+          } 
+
+          & input {
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            border: 1px solid #333;
+            border-radius: 5px;
+            outline: none;
+            line-height: normal;
+          }
+        }
       }
 
-      td {
-        border-bottom: 1px solid #333;
-      }
+           
     }
   }
 }
