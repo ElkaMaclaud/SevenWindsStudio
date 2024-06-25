@@ -5,8 +5,8 @@ const Bin = () => {
     <svg
       version="1.0"
       xmlns="http://www.w3.org/2000/svg"
-      width="15.000000pt"
-      height="15.000000pt"
+      width="17.000000pt"
+      height="17.000000pt"
       viewBox="0 0 512.000000 512.000000"
       preserveAspectRatio="xMidYMid meet"
     >

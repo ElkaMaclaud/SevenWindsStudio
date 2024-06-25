@@ -1,4 +1,4 @@
-import React, { Dispatch, FC } from "react";
+import React, { FC } from "react";
 import { OutlayRowRequest } from "../../type/ProjectType";
 import style from "./style/LevelComponent.module.scss";
 import EditPage from "../../UI_Components/icons/EditPage";
@@ -6,60 +6,47 @@ import Bin from "../../UI_Components/icons/Bin";
 
 const LevelComponent: FC<{
   item: OutlayRowRequest;
-  hover: boolean;
-  setHover: Dispatch<React.SetStateAction<boolean>>;
+  edit: boolean;
   editMode: (item: OutlayRowRequest, create?: boolean) => void;
   deleteRow: (id: number) => void;
-}> = ({ item, hover, setHover, editMode, deleteRow }) => {
+}> = ({ item, edit, editMode, deleteRow }) => {
   if (!item.parentId) {
     return (
-      <div>
+      <div className={style.levelWrapper}>
         {item.child && item.child.length > 0 ? (
-          <div
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            className={style.borderParent}
-          >
-            <div className={!hover ? style.editIcon : style.editIcon_hover}>
+          <div className={style.borderParent}>
+            <div className={edit ? style.icon : style.editIcon}>
               <div onClick={() => editMode(item, true)}>
                 <EditPage />
               </div>
-              {hover && (
-                <div
-                  onClick={() => {
-                    deleteRow(item.id);
-                  }}
-                  className={style.bin}
-                >
-                  <Bin />
-                </div>
-              )}
+              <div
+                onClick={() => {
+                  deleteRow(item.id);
+                }}
+                className={style.bin}
+              >
+                <Bin />
+              </div>
             </div>
             <div
-              style={{ height: `${44 * item.child.length + 12}px` }}
+              style={{ height: `${64 * item.child.length}px` }}
               className={style.lineContainer}
             ></div>
           </div>
         ) : (
-          <div
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            className={style.borderParent}
-          >
-            <div className={!hover ? style.editIcon : style.editIcon_hover}>
-            <div onClick={() =>editMode(item, true)}>
+          <div className={style.borderParent}>
+            <div className={edit ? style.icon : style.editIcon}>
+              <div onClick={() => editMode(item, true)}>
                 <EditPage />
               </div>
-              {hover && (
-                <div
-                  onClick={() => {
-                    deleteRow(item.id);
-                  }}
-                  className={style.bin}
-                >
-                  <Bin />
-                </div>
-              )}
+              <div
+                onClick={() => {
+                  deleteRow(item.id);
+                }}
+                className={style.bin}
+              >
+                <Bin />
+              </div>
             </div>
           </div>
         )}
@@ -67,54 +54,42 @@ const LevelComponent: FC<{
     );
   }
   return (
-    <div>
+    <div className={style.levelWrapper}>
       {item.child && item.child.length > 0 ? (
-        <div
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          className={style.borderParent}
-        >
-          <div className={!hover ? style.editIcon : style.editIcon_hover}>
-          <div onClick={() =>editMode(item, true)}>
+        <div className={style.borderParent}>
+          <div className={edit ? style.icon : style.editIcon}>
+            <div onClick={() => editMode(item, true)}>
               <EditPage />
             </div>
-            {hover && (
-              <div
-                onClick={() => {
-                  deleteRow(item.id);
-                }}
-                className={style.bin}
-              >
-                <Bin />
-              </div>
-            )}
+            <div
+              onClick={() => {
+                deleteRow(item.id);
+              }}
+              className={style.bin}
+            >
+              <Bin />
+            </div>
           </div>
           <div
-            style={{ height: `${44 * item.child.length + 12}px` }}
+            style={{ height: `${64 * item.child.length}px` }}
             className={style.lineContainer}
           ></div>
           <div className={style.lineChildContainer}></div>
         </div>
       ) : (
-        <div
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
-          className={style.borderParent}
-        >
-          <div className={!hover ? style.editIcon : style.editIcon_hover}>
-          <div onClick={() =>editMode(item, true)}>
+        <div className={style.borderParent}>
+          <div className={edit ? style.icon : style.editIcon}>
+            <div onClick={() => editMode(item, true)}>
               <EditPage />
             </div>
-            {hover && (
-              <div
-                onClick={() => {
-                  deleteRow(item.id);
-                }}
-                className={style.bin}
-              >
-                <Bin />
-              </div>
-            )}
+            <div
+              onClick={() => {
+                deleteRow(item.id);
+              }}
+              className={style.bin}
+            >
+              <Bin />
+            </div>
           </div>
           <div className={style.lineChildContainer}></div>
         </div>

@@ -1,4 +1,10 @@
-import React, { KeyboardEvent, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  FC,
+  KeyboardEvent,
+  useEffect,
+  useState,
+} from "react";
 import style from "./style/Table.module.scss";
 import Spinner from "../Spinner/Spinner";
 import { useAppDispatch, useAppSelector } from "../../store/reduxHooks";
@@ -11,72 +17,146 @@ import { updateData } from "../../utils/updateData";
 
 const Table = () => {
   const { loading, data } = useAppSelector((state) => state.value);
-  const [list, setList] = useState(() => generateArray(data))
-  const [hover, setHover] = useState(false);
-  const dispatch = useAppDispatch()
+  const [list, setList] = useState(() => generateArray(data));
+  const [edit, setEdit] = useState(false);
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    setList(() => generateArray(data))
-  }, [data])
+    setList(() => generateArray(data));
+  }, [data]);
 
-  const createOrUpdateRow = (e: KeyboardEvent<HTMLTableRowElement>, item: OutlayRowRequest) => {
-    // dispatch(CREATE_ROW({requestData: item}))
-    // dispatch(UPDATE_ROW({rID: item.parentId, requestData: item}))
-  }
-
-    
-
-  const deleteRow = (id: number) => {
-    dispatch(DELETE_ROW({rID: id}))
-  }
-  const editMode = (item: OutlayRowRequest, create?: boolean) => {
-    console.log("editMode", list, create)
-    setList(() => generateArray(updateData(data, item, create)))
-  }
-
-  const createCalendarRender = () => {   
-    return list.map((item) => {
-      if(item.edit) {
-        return (
-          <tr key={item.id} onKeyDown={(e) => createOrUpdateRow(e, item)} className={style.editTd}>
-            <td
-              style={{ paddingLeft: `${20 + (item.padding || 0)}px` }}
-              className={style.level}
-            >
-              <LevelComponent
-                item={item}
-                hover={hover}
-                setHover={setHover}
-                editMode={editMode}
-                deleteRow={deleteRow}
-              />
-            </td>
-            <td className={style.name}><input type="text" value={item.rowName} /></td>
-            <td className={style.salary}><input type="text" value={item.salary} /></td>
-            <td className={style.equipment}><input type="text" value={item.equipmentCosts} /></td>
-            <td className={style.overhead}><input type="text" value={item.overheads} /></td>
-            <td className={style.profit}><input type="text" value={item.estimatedProfit} /></td>
-          </tr>
+  const createNewRow = (
+    e: KeyboardEvent<HTMLTableRowElement>,
+    inputData: OutlayRowRequest
+  ) => {
+    if (e.key === "Enter") {
+      setEdit(false);
+      setList(() => generateArray(data));
+      if (inputData.id === 0) {
+        dispatch(CREATE_ROW({ requestData: inputData }));
+      } else {
+        dispatch(
+          UPDATE_ROW({ rID: inputData.parentId, requestData: inputData })
         );
       }
+    }
+  };
+
+  const deleteRow = (id: number) => {
+    dispatch(DELETE_ROW({ rID: id }));
+  };
+  const editMode = (item: OutlayRowRequest, create?: boolean) => {
+    if (edit) {
+      return;
+    }
+    setEdit(true);
+    setList(() => generateArray(updateData(data, item, create)));
+  };
+  const InputRow: FC<{ item: OutlayRowRequest }> = ({ item }) => {
+    const [value, setValue] = useState({
+      rowName: item.rowName,
+      salary: item.salary,
+      equipmentCosts: item.equipmentCosts,
+      overheads: item.overheads,
+      estimatedProfit: item.estimatedProfit,
+    });
+    const handleChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
+      let val = e.target.value;
+      if (key !== "rowName") {
+        val = val.replace(/\D/g, "");
+        e.target.value = val;
+      }
+      setValue((prev) => ({ ...prev, [key]: e.target.value }));
+    };
+    return (
+      <tr onKeyDown={(e) => createNewRow(e, { ...item, ...value })}>
+        <td
+          style={{ paddingLeft: `${20 + (item.padding || 0)}px` }}
+          className={style.editTd}
+        >
+          <LevelComponent
+            item={item}
+            edit={edit}
+            editMode={editMode}
+            deleteRow={deleteRow}
+          />
+        </td>
+        <td className={style.editTd}>
+          <input
+            onChange={(e) => handleChange(e, "rowName")}
+            type="text"
+            value={value.rowName}
+          />
+        </td>
+        <td className={style.editTd}>
+          <input
+            onChange={(e) => handleChange(e, "salary")}
+            type="text"
+            value={value.salary}
+          />
+        </td>
+        <td className={style.editTd}>
+          <input
+            onChange={(e) => handleChange(e, "equipmentCosts")}
+            type="text"
+            value={value.equipmentCosts}
+          />
+        </td>
+        <td className={style.editTd}>
+          <input
+            onChange={(e) => handleChange(e, "overheads")}
+            type="text"
+            value={value.overheads}
+          />
+        </td>
+        <td className={style.editTd}>
+          <input
+            onChange={(e) => handleChange(e, "estimatedProfit")}
+            type="text"
+            value={value.estimatedProfit}
+          />
+        </td>
+      </tr>
+    );
+  };
+
+  const createCalendarRender = () => {
+    return list.map((item) => {
+      if (item.edit) {
+        return <InputRow item={item} key={item.id} />;
+      }
       return (
-        <tr key={item.id} onKeyDown={(e) => createOrUpdateRow(e, item)}  onDoubleClick={() => editMode(item)}>
+        <tr
+          key={item.id}
+          onDoubleClick={() => editMode(item)}
+          style={{ cursor: `${edit ? "auto" : "pointer"}` }}
+        >
           <td
             style={{ paddingLeft: `${20 + (item.padding || 0)}px` }}
             className={style.level}
           >
             <LevelComponent
               item={item}
-              hover={hover}
-              setHover={setHover}
+              edit={edit}
               editMode={editMode}
               deleteRow={deleteRow}
             />
           </td>
-          <td className={style.name}>{item.rowName}</td>
-          <td className={style.salary}>{item.salary}</td>
-          <td className={style.equipment}>{item.equipmentCosts}</td>
-          <td className={style.overhead}>{item.overheads}</td>
-          <td className={style.profit}>{item.estimatedProfit}</td>
+          <td className={style.editTd}>
+            <div>{item.rowName}</div>
+          </td>
+          <td className={style.editTd}>
+            <div>{item.salary}</div>
+          </td>
+          <td className={style.editTd}>
+            <div>{item.equipmentCosts}</div>
+          </td>
+          <td className={style.editTd}>
+            <div>{item.overheads}</div>
+          </td>
+          <td className={style.editTd}>
+            <div>{item.estimatedProfit}</div>
+          </td>
         </tr>
       );
     });

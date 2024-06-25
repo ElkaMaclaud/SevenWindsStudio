@@ -1,37 +1,64 @@
-.borderParent {
-  position: relative;
+.levelWrapper {
+  width: 42px;
+  height: 32px;
 
-  .lineContainer {
-    position: absolute;
-    top: 22px;
-    left: 12px;
-    transform: translateX(-50%);
-    width: 2px;
-    background-color: #aaa;
-  }
-  .lineChildContainer {
-    position: absolute;
-    top: 13px;
-    left: -9px;
-    transform: translateY(-50%);
-    width: 15px;
-    height: 2px;
-    background-color: #aaa;
-  }
-  .editIcon {
-    padding: 3px;
-    height: 25px;
-    width: 49px;
-    cursor: pointer;
-    transition: 0.1s ease-in-out;
+  .borderParent {
+    position: relative;
 
-    &_hover {
-      @extend .editIcon;
-      background-color: #555;
+    .lineContainer {
+      padding: 0;
+      position: absolute;
+      top: 22px;
+      left: 11px;
+      transform: translateX(-50%);
+      width: 2px;
+      background-color: #aaa;
+    }
+    .lineChildContainer {
+      padding: 0;
+      position: absolute;
+      top: 13px;
+      left: -10px;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 2px;
+      background-color: #aaa;
+    }
+    .editIcon {
+      cursor: pointer;
       display: flex;
-      align-items: start;
+      justify-content: space-between;
+      align-items: center;
+      transition: 0.1s ease-in-out;
       border-radius: 5px;
-      gap: 2px;
+
+      & svg {
+        padding-top: 5px;
+      }
+
+      .bin {
+        display: none;
+      }
+
+      &:hover {
+        background-color: #555;
+
+        .bin {
+          display: block;
+        }
+      }
+    }
+    .icon {
+      cursor: auto;
+      padding: 0;
+
+      & svg {
+        padding-top: 5px;
+      }
+
+      .bin {
+        display: none;
+      }
     }
   }
 }
