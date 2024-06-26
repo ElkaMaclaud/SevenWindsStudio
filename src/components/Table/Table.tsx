@@ -3,6 +3,7 @@ import React, {
   FC,
   KeyboardEvent,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import style from "./style/Table.module.scss";
@@ -68,18 +69,24 @@ const Table = () => {
       }
       setValue((prev) => ({ ...prev, [key]: e.target.value }));
     };
+    const MemoLevelComponent = useMemo(
+      () => (
+        <LevelComponent
+          item={item}
+          edit={edit}
+          editMode={editMode}
+          deleteRow={deleteRow}
+        />
+      ),
+      [item]
+    );
     return (
       <tr onKeyDown={(e) => createNewRow(e, { ...item, ...value })}>
         <td
           style={{ paddingLeft: `${20 + (item.padding || 0)}px` }}
           className={style.editTd}
         >
-          <LevelComponent
-            item={item}
-            edit={edit}
-            editMode={editMode}
-            deleteRow={deleteRow}
-          />
+          {MemoLevelComponent}
         </td>
         <td className={style.editTd}>
           <input
