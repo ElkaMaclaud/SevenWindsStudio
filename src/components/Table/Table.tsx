@@ -36,7 +36,7 @@ const Table = () => {
         dispatch(CREATE_ROW({ requestData: inputData }));
       } else {
         dispatch(
-          UPDATE_ROW({ rID: inputData.parentId, requestData: inputData })
+          UPDATE_ROW({ rID: inputData.id, requestData: inputData })
         );
       }
     }

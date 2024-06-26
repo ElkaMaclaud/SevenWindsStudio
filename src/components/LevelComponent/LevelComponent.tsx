@@ -3,6 +3,7 @@ import { OutlayRowRequest } from "../../type/ProjectType";
 import style from "./style/LevelComponent.module.scss";
 import EditPage from "../../UI_Components/icons/EditPage";
 import Bin from "../../UI_Components/icons/Bin";
+import { calculateHeight } from "../../utils/calculateHeight";
 
 const LevelComponent: FC<{
   item: OutlayRowRequest;
@@ -10,6 +11,7 @@ const LevelComponent: FC<{
   editMode: (item: OutlayRowRequest, create?: boolean) => void;
   deleteRow: (id: number) => void;
 }> = ({ item, edit, editMode, deleteRow }) => {
+
   if (!item.parentId) {
     return (
       <div className={style.levelWrapper}>
@@ -29,7 +31,7 @@ const LevelComponent: FC<{
               </div>
             </div>
             <div
-              style={{ height: `${64 * item.child.length}px` }}
+              style={{ height: `${calculateHeight(item)}px` }}
               className={style.lineContainer}
             ></div>
           </div>
@@ -71,7 +73,7 @@ const LevelComponent: FC<{
             </div>
           </div>
           <div
-            style={{ height: `${64 * item.child.length}px` }}
+            style={{ height: `${calculateHeight(item)}px` }}
             className={style.lineContainer}
           ></div>
           <div className={style.lineChildContainer}></div>

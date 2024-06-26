@@ -1,7 +1,8 @@
 .spinnerWrapper {
+  top: 0;
   position: absolute;
-  background-color: rgba(35, 35, 35, .5);
-  width: 80%;
+  background-color: rgba(35, 35, 35, .9);
+  width: 100%;
 
   .spinnerContainer {
     display: flex;

@@ -11,7 +11,7 @@ export interface OutlayRowRequest {
   salary: number;
   supportCosts: number;
   id: number;
-  child?: OutlayRowRequest[],
+  child: OutlayRowRequest[],
   padding?: number,
   edit?: boolean
 }

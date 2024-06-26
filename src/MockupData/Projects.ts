@@ -31,6 +31,7 @@ export const project: OutlayRowRequest = {
   rowName: "Южная строительная площадка",
   salary: 20348,
   supportCosts: 0,
+  child: []
 };
 // {
 //   "current": {
