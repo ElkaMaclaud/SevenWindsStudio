@@ -15,6 +15,7 @@ import LevelComponent from "../LevelComponent/LevelComponent";
 import { OutlayRowRequest } from "../../type/ProjectType";
 import { CREATE_ROW, DELETE_ROW, UPDATE_ROW } from "../../store/slice";
 import { updateData } from "../../utils/updateData";
+import { inputDataChecking } from "../../utils/inputDataChecking";
 
 const Table = () => {
   const { loading, data } = useAppSelector((state) => state.value);
@@ -34,10 +35,10 @@ const Table = () => {
       setEdit(false);
       setList(() => generateArray(data));
       if (inputData.id === 0) {
-        dispatch(CREATE_ROW({ requestData: inputData }));
+        dispatch(CREATE_ROW({ requestData: inputDataChecking(inputData) }));
       } else {
         dispatch(
-          UPDATE_ROW({ rID: inputData.id, requestData: inputData })
+          UPDATE_ROW({ rID: inputData.id, requestData: inputDataChecking(inputData) })
         );
       }
     }
