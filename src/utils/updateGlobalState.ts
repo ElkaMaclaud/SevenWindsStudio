@@ -69,7 +69,8 @@ export function updateGlobalState(
   
   
 
-//Почему-то не работает сколько я не билась:(
+// Почему-то не работает сколько я не билась:(
+
 //   export function updateGlobalState(data: OutlayRowRequest[], changed: OutlayRowRequest[]): OutlayRowRequest[] {
 //     let current = [...changed];
 //     const updatedData = data.map(item => {

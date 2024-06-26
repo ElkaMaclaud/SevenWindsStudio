@@ -1,6 +1,7 @@
 import React, {
   ChangeEvent,
   FC,
+  FocusEvent,
   KeyboardEvent,
   useEffect,
   useMemo,
@@ -16,6 +17,7 @@ import { OutlayRowRequest } from "../../type/ProjectType";
 import { CREATE_ROW, DELETE_ROW, UPDATE_ROW } from "../../store/slice";
 import { updateData } from "../../utils/updateData";
 import { inputDataChecking } from "../../utils/inputDataChecking";
+import { emptyData } from "../../utils/EmptyData";
 
 const Table = () => {
   const { loading, data } = useAppSelector((state) => state.value);
@@ -35,11 +37,9 @@ const Table = () => {
       setEdit(false);
       setList(() => generateArray(data));
       if (inputData.id === 0) {
-        dispatch(CREATE_ROW({ requestData: inputDataChecking(inputData) }));
+        dispatch(CREATE_ROW({ requestData: inputData }));
       } else {
-        dispatch(
-          UPDATE_ROW({ rID: inputData.id, requestData: inputDataChecking(inputData) })
-        );
+        dispatch(UPDATE_ROW({ rID: inputData.id, requestData: inputData }));
       }
     }
   };
@@ -70,6 +70,11 @@ const Table = () => {
       }
       setValue((prev) => ({ ...prev, [key]: e.target.value }));
     };
+
+    // Чтобы клиент понимал, что поле заполнится 0 в случае пустого поля
+    const handleBlur = (e: FocusEvent<HTMLInputElement>, key: string) => {
+      setValue((prev) => ({ ...prev, [key]: e.target.value || 0 }));
+    };
     const MemoLevelComponent = useMemo(
       () => (
         <LevelComponent
@@ -82,7 +87,11 @@ const Table = () => {
       [item]
     );
     return (
-      <tr onKeyDown={(e) => createNewRow(e, { ...item, ...value })}>
+      <tr
+        onKeyDown={(e) =>
+          createNewRow(e, { ...item, ...inputDataChecking(value) })
+        }
+      >
         <td
           style={{ paddingLeft: `${20 + (item.padding || 0)}px` }}
           className={style.editTd}
@@ -99,6 +108,7 @@ const Table = () => {
         <td className={style.editTd}>
           <input
             onChange={(e) => handleChange(e, "salary")}
+            onBlur={(e) => handleBlur(e, "salary")}
             type="text"
             value={value.salary}
           />
@@ -106,6 +116,7 @@ const Table = () => {
         <td className={style.editTd}>
           <input
             onChange={(e) => handleChange(e, "equipmentCosts")}
+            onBlur={(e) => handleBlur(e, "equipmentCosts")}
             type="text"
             value={value.equipmentCosts}
           />
@@ -113,6 +124,7 @@ const Table = () => {
         <td className={style.editTd}>
           <input
             onChange={(e) => handleChange(e, "overheads")}
+            onBlur={(e) => handleBlur(e, "overheads")}
             type="text"
             value={value.overheads}
           />
@@ -120,6 +132,7 @@ const Table = () => {
         <td className={style.editTd}>
           <input
             onChange={(e) => handleChange(e, "estimatedProfit")}
+            onBlur={(e) => handleBlur(e, "estimatedProfit")}
             type="text"
             value={value.estimatedProfit}
           />
@@ -128,7 +141,15 @@ const Table = () => {
     );
   };
 
-  const createCalendarRender = () => {
+  const createTableRender = () => {
+    if (list.length === 0) {
+      return (
+        <InputRow
+          item={emptyData()}
+          key={Math.random().toString(36).substring(2, 15)}
+        />
+      );
+    }
     return list.map((item) => {
       if (item.edit) {
         return <InputRow item={item} key={item.id} />;
@@ -183,7 +204,7 @@ const Table = () => {
             <th className={style.profit}>Сметная прибыль</th>
           </tr>
         </thead>
-        <tbody>{createCalendarRender()}</tbody>
+        <tbody>{createTableRender()}</tbody>
       </table>
       {loading && (
         <div className={style.spinnerWrapper}>
