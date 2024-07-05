@@ -3,7 +3,8 @@ import { OutlayRowRequest } from "../type/ProjectType";
 import { updateGlobalState } from "../utils/updateGlobalState";
 import { RequestData } from "../type/RequestData";
 
-const ID = { id: 128698, rowName: "d7c41e01-8b92-499c-b029-c9e95980064e" };
+// const ID = { id: 128698, rowName: "d7c41e01-8b92-499c-b029-c9e95980064e" };
+const ID = { id: 130026, rowName: "ff3eedcd-834f-411f-a124-f665981b70b2" };
 export interface ICountLessons {
   [key: string]: number;
 }
@@ -150,13 +151,15 @@ const slice = createSlice({
       };
     });
     builder.addCase(CREATE_ROW.fulfilled, (state, action) => {
-      const rID = action.meta.arg.requestData.parentId
+      const rID = action.meta.arg.requestData.parentId;
       return {
         ...state,
         loading: false,
-        data: updateGlobalState(state.data, [
-          ...action.payload.changed,      
-        ], null, {...action.payload.current, parentId: rID, child: []}),
+        data: updateGlobalState(state.data, [...action.payload.changed], null, {
+          ...action.payload.current,
+          parentId: rID,
+          child: [],
+        }),
       };
     });
     builder.addCase(UPDATE_ROW.pending, (state) => {
@@ -182,13 +185,11 @@ const slice = createSlice({
       };
     });
     builder.addCase(DELETE_ROW.fulfilled, (state, action) => {
-      const rID = action.meta.arg.rID
+      const rID = action.meta.arg.rID;
       return {
         ...state,
         loading: false,
-        data: updateGlobalState(state.data, [
-          ...action.payload.changed,
-        ], rID),
+        data: updateGlobalState(state.data, [...action.payload.changed], rID),
       };
     });
   },
