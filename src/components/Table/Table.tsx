@@ -4,14 +4,12 @@ import React, {
   FocusEvent,
   KeyboardEvent,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import style from "./style/Table.module.scss";
 import Spinner from "../Spinner/Spinner";
 import { useAppDispatch, useAppSelector } from "../../store/reduxHooks";
 
-import { generateArray } from "../../utils/generateArr";
 import LevelComponent from "../LevelComponent/LevelComponent";
 import { OutlayRowRequest } from "../../type/ProjectType";
 import { CREATE_ROW, DELETE_ROW, UPDATE_ROW } from "../../store/slice";
@@ -21,12 +19,12 @@ import { emptyData } from "../../utils/EmptyData";
 
 const Table = () => {
   const { loading, data } = useAppSelector((state) => state.value);
-  const [list, setList] = useState(() => generateArray(data));
+  const [list, setList] = useState(data);
   const [edit, setEdit] = useState(false);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    setList(() => generateArray(data));
+    setList(() => [...data]);
   }, [data]);
 
   const createNewRow = (
@@ -35,7 +33,7 @@ const Table = () => {
   ) => {
     if (e.key === "Enter") {
       setEdit(false);
-      setList(() => generateArray(data));
+      setList(() => [...data]);
       if (inputData.id === 0) {
         dispatch(CREATE_ROW({ requestData: inputData }));
       } else {
@@ -52,7 +50,7 @@ const Table = () => {
       return;
     }
     setEdit(true);
-    setList(() => generateArray(updateData(data, item, create)));
+    setList(() => updateData(data, item, create));
   };
   const InputRow: FC<{ item: OutlayRowRequest }> = ({ item }) => {
     const [value, setValue] = useState({
@@ -75,17 +73,6 @@ const Table = () => {
     const handleBlur = (e: FocusEvent<HTMLInputElement>, key: string) => {
       setValue((prev) => ({ ...prev, [key]: e.target.value || 0 }));
     };
-    const MemoLevelComponent = useMemo(
-      () => (
-        <LevelComponent
-          item={item}
-          edit={edit}
-          editMode={editMode}
-          deleteRow={deleteRow}
-        />
-      ),
-      [item]
-    );
     return (
       <tr
         onKeyDown={(e) =>
@@ -96,7 +83,12 @@ const Table = () => {
           style={{ paddingLeft: `${20 + (item.padding || 0)}px` }}
           className={style.editTd}
         >
-          {MemoLevelComponent}
+          <LevelComponent
+            item={item}
+            edit={edit}
+            editMode={editMode}
+            deleteRow={deleteRow}
+          />
         </td>
         <td className={style.editTd}>
           <input
@@ -141,54 +133,73 @@ const Table = () => {
     );
   };
 
-  const createTableRender = () => {
-    if (list.length === 0) {
-      return (
-        <InputRow
-          item={emptyData()}
-          key={Math.random().toString(36).substring(2, 15)}
-        />
-      );
-    }
-    return list.map((item) => {
-      if (item.edit) {
-        return <InputRow item={item} key={item.id} />;
+  const createTableRender = (items: OutlayRowRequest[]) => {
+    const renderItems = (
+      items: OutlayRowRequest[],
+      padding: number = 0,
+      parentId: number | null = null
+    ) => {
+      if (items.length === 0) {
+        return (
+          <InputRow
+            item={emptyData()}
+            key={Math.random().toString(36).substring(2, 15)}
+          />
+        );
       }
-      return (
-        <tr
-          key={item.id}
-          onDoubleClick={() => editMode(item)}
-          style={{ cursor: `${edit ? "auto" : "pointer"}` }}
-        >
-          <td
-            style={{ paddingLeft: `${20 + (item.padding || 0)}px` }}
-            className={style.level}
-          >
-            <LevelComponent
-              item={item}
-              edit={edit}
-              editMode={editMode}
-              deleteRow={deleteRow}
-            />
-          </td>
-          <td className={style.editTd}>
-            <div>{item.rowName}</div>
-          </td>
-          <td className={style.editTd}>
-            <div>{item.salary}</div>
-          </td>
-          <td className={style.editTd}>
-            <div>{item.equipmentCosts}</div>
-          </td>
-          <td className={style.editTd}>
-            <div>{item.overheads}</div>
-          </td>
-          <td className={style.editTd}>
-            <div>{item.estimatedProfit}</div>
-          </td>
-        </tr>
-      );
-    });
+      return items.map((item) => {
+        const children =
+          item.child && item.child.length > 0
+            ? renderItems(item.child, padding + 20, item.id)
+            : null;
+        if (item.edit) {
+          return (
+            <React.Fragment key={item.id}>
+              <InputRow item={{ ...item, parentId, padding }} key={item.id} />
+              {children}
+            </React.Fragment>
+          );
+        }
+        return (
+          <React.Fragment key={item.id}>
+            <tr
+              onDoubleClick={() => editMode(item)}
+              style={{ cursor: `${edit ? "auto" : "pointer"}` }}
+            >
+              <td
+                style={{ paddingLeft: `${20 + padding}px` }}
+                className={style.level}
+              >
+                <LevelComponent
+                  item={{ ...item, parentId }}
+                  edit={edit}
+                  editMode={editMode}
+                  deleteRow={deleteRow}
+                />
+              </td>
+              <td className={style.editTd}>
+                <div>{item.rowName}</div>
+              </td>
+              <td className={style.editTd}>
+                <div>{item.salary}</div>
+              </td>
+              <td className={style.editTd}>
+                <div>{item.equipmentCosts}</div>
+              </td>
+              <td className={style.editTd}>
+                <div>{item.overheads}</div>
+              </td>
+              <td className={style.editTd}>
+                <div>{item.estimatedProfit}</div>
+              </td>
+            </tr>
+            {children}
+          </React.Fragment>
+        );
+      });
+    };
+
+    return renderItems(items);
   };
 
   return (
@@ -204,7 +215,7 @@ const Table = () => {
             <th className={style.profit}>Сметная прибыль</th>
           </tr>
         </thead>
-        <tbody>{createTableRender()}</tbody>
+        <tbody>{createTableRender(list)}</tbody>
       </table>
       {loading && (
         <div className={style.spinnerWrapper}>

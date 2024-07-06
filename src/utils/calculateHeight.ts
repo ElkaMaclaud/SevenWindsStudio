@@ -5,7 +5,7 @@ export function calculateHeight(item: OutlayRowRequest): number {
 
   function countChildren(item: OutlayRowRequest, count = 0) {
     summChild += item.child.length;
-    const newItem = item;
+    const newItem = {...item};
     
     if (count === 0) {
       newItem.child = newItem.child.slice(0, newItem.child.length - 1);
