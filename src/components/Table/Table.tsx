@@ -60,6 +60,11 @@ const Table = () => {
       overheads: item.overheads,
       estimatedProfit: item.estimatedProfit,
     });
+    useEffect(() => {
+       if(list.length === 0) {
+        setEdit(true)
+       }
+    }, [])
     const handleChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
       let val = e.target.value;
       if (key !== "rowName") {
