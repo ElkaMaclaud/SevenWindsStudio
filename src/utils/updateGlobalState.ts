@@ -5,32 +5,28 @@ export function updateGlobalState(
   rID?: number | null,
   current?: OutlayRowRequest
 ): OutlayRowRequest[] {
-  const updateGlobalData = (
-    inputData: OutlayRowRequest[],
-    changed: OutlayRowRequest[]
-  ): OutlayRowRequest[] => {
-    const result: OutlayRowRequest[] = [];
 
-    for (let item of inputData) {
+    const result: OutlayRowRequest[] = [];
+    for (let item of data) {
       let updatedItem = item;
-      const foundItemIndex = changed.findIndex((curr) => curr.id === item.id);
+      const foundItemIndex = changed.findIndex((curr) => curr.id === updatedItem.id);
 
       if (foundItemIndex > -1) {
         const foundItem = changed[foundItemIndex];
         changed.splice(foundItemIndex, 1);
-        updatedItem = { ...item, ...foundItem };
+        updatedItem = { ...updatedItem, ...foundItem };
       }
 
-      if (rID && item.id === rID) {
+      if (rID && updatedItem.id === rID) {
         continue; 
       }
 
-      if (current && item.id === current.parentId) {
+      if (current && updatedItem.id === current.parentId) {
         updatedItem = { ...updatedItem, child: [...(updatedItem.child || []), current] };
       }
 
-      if (item.child && item.child.length) {
-        updatedItem = { ...updatedItem, child: updateGlobalData(item.child, changed) };
+      if (updatedItem.child && updatedItem.child.length) {
+        updatedItem = { ...updatedItem, child: updateGlobalState(updatedItem.child, changed, rID, current) };
       }
 
       result.push(updatedItem);
@@ -39,8 +35,6 @@ export function updateGlobalState(
     return result;
   };
 
-  return updateGlobalData(data, changed);
-}
 
 
 

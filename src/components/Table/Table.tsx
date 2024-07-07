@@ -24,7 +24,7 @@ const Table = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    setList(() => [...data]);
+    setList(data);
   }, [data]);
 
   const createNewRow = (
