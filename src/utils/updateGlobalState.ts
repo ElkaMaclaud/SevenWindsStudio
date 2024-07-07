@@ -7,31 +7,34 @@ export function updateGlobalState(
 ): OutlayRowRequest[] {
 
     const result: OutlayRowRequest[] = [];
-    for (let item of data) {
-      let updatedItem = item;
-      const foundItemIndex = changed.findIndex((curr) => curr.id === updatedItem.id);
-
-      if (foundItemIndex > -1) {
-        const foundItem = changed[foundItemIndex];
-        changed.splice(foundItemIndex, 1);
-        updatedItem = { ...updatedItem, ...foundItem };
+    if (data.length === 0 && current) {
+      result.push({...current, child: []})
+    } else {
+      for (let item of data) {
+        let updatedItem = item;
+        const foundItemIndex = changed.findIndex((curr) => curr.id === updatedItem.id);
+  
+        if (foundItemIndex > -1) {
+          const foundItem = changed[foundItemIndex];
+          changed.splice(foundItemIndex, 1);
+          updatedItem = { ...updatedItem, ...foundItem };
+        }
+  
+        if (rID && updatedItem.id === rID) {
+          continue; 
+        }
+  
+        if (current && updatedItem.id === current.parentId) {
+          updatedItem = { ...updatedItem, child: [...(updatedItem.child || []), current] };
+        }
+  
+        if (updatedItem.child && updatedItem.child.length) {
+          updatedItem = { ...updatedItem, child: updateGlobalState(updatedItem.child, changed, rID, current) };
+        }
+  
+        result.push(updatedItem);
       }
-
-      if (rID && updatedItem.id === rID) {
-        continue; 
-      }
-
-      if (current && updatedItem.id === current.parentId) {
-        updatedItem = { ...updatedItem, child: [...(updatedItem.child || []), current] };
-      }
-
-      if (updatedItem.child && updatedItem.child.length) {
-        updatedItem = { ...updatedItem, child: updateGlobalState(updatedItem.child, changed, rID, current) };
-      }
-
-      result.push(updatedItem);
     }
-
     return result;
   };
 

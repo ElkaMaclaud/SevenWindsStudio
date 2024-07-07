@@ -60,11 +60,6 @@ const Table = () => {
       overheads: item.overheads,
       estimatedProfit: item.estimatedProfit,
     });
-    useEffect(() => {
-       if(list.length === 0) {
-        setEdit(true)
-       }
-    }, [])
     const handleChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
       let val = e.target.value;
       if (key !== "rowName") {
@@ -90,7 +85,7 @@ const Table = () => {
         >
           <LevelComponent
             item={item}
-            edit={edit}
+            edit={(list.length === 0 && true) || edit}
             editMode={editMode}
             deleteRow={deleteRow}
           />
