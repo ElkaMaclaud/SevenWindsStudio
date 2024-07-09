@@ -60,18 +60,19 @@ const Table = () => {
       overheads: item.overheads,
       estimatedProfit: item.estimatedProfit,
     });
-    const handleChange = (e: ChangeEvent<HTMLInputElement>, key: string) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
       let val = e.target.value;
+      let key = e.target.dataset.key
       if (key !== "rowName") {
         val = val.replace(/\D/g, "");
         e.target.value = val;
       }
-      setValue((prev) => ({ ...prev, [key]: e.target.value }));
+      setValue((prev) => ({ ...prev, [key!]: e.target.value }));
     };
 
     // Чтобы клиент понимал, что поле заполнится 0 в случае пустого поля
-    const handleBlur = (e: FocusEvent<HTMLInputElement>, key: string) => {
-      setValue((prev) => ({ ...prev, [key]: e.target.value || 0 }));
+    const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
+      setValue((prev) => ({ ...prev, [e.target.dataset.key!]: e.target.value || 0 }));
     };
     return (
       <tr
@@ -92,39 +93,44 @@ const Table = () => {
         </td>
         <td className={style.editTd}>
           <input
-            onChange={(e) => handleChange(e, "rowName")}
+            data-key="rowName"
+            onChange={handleChange}
             type="text"
             value={value.rowName}
           />
         </td>
         <td className={style.editTd}>
           <input
-            onChange={(e) => handleChange(e, "salary")}
-            onBlur={(e) => handleBlur(e, "salary")}
+            data-key="salary"
+            onChange={handleChange}
+            onBlur={handleBlur}
             type="text"
             value={value.salary}
           />
         </td>
         <td className={style.editTd}>
           <input
-            onChange={(e) => handleChange(e, "equipmentCosts")}
-            onBlur={(e) => handleBlur(e, "equipmentCosts")}
+            data-key="equipmentCosts"
+            onChange={handleChange}
+            onBlur={handleBlur}
             type="text"
             value={value.equipmentCosts}
           />
         </td>
         <td className={style.editTd}>
           <input
-            onChange={(e) => handleChange(e, "overheads")}
-            onBlur={(e) => handleBlur(e, "overheads")}
+            data-key="overheads"
+            onChange={handleChange}
+            onBlur={handleBlur}
             type="text"
             value={value.overheads}
           />
         </td>
         <td className={style.editTd}>
           <input
-            onChange={(e) => handleChange(e, "estimatedProfit")}
-            onBlur={(e) => handleBlur(e, "estimatedProfit")}
+            data-key="rowName"
+            onChange={handleChange}
+            onBlur={handleBlur}
             type="text"
             value={value.estimatedProfit}
           />
