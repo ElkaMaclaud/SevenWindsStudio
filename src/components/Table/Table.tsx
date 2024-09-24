@@ -2,8 +2,10 @@ import React, {
   ChangeEvent,
   FC,
   FocusEvent,
+  Fragment,
   KeyboardEvent,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import style from "./style/Table.module.scss";
@@ -60,9 +62,17 @@ const Table = () => {
       overheads: item.overheads,
       estimatedProfit: item.estimatedProfit,
     });
+    const inputRef = useRef<HTMLInputElement>(null);
+    
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, [item]);
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
       let val = e.target.value;
-      let key = e.target.dataset.key
+      let key = e.target.dataset.key;
       if (key !== "rowName") {
         val = val.replace(/\D/g, "");
         e.target.value = val;
@@ -72,7 +82,10 @@ const Table = () => {
 
     // Чтобы клиент понимал, что поле заполнится 0 в случае пустого поля
     const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
-      setValue((prev) => ({ ...prev, [e.target.dataset.key!]: e.target.value || 0 }));
+      setValue((prev) => ({
+        ...prev,
+        [e.target.dataset.key!]: e.target.value || 0,
+      }));
     };
     return (
       <tr
@@ -93,6 +106,7 @@ const Table = () => {
         </td>
         <td className={style.editTd}>
           <input
+            ref={inputRef}
             data-key="rowName"
             onChange={handleChange}
             type="text"
@@ -160,14 +174,14 @@ const Table = () => {
             : null;
         if (item.edit) {
           return (
-            <React.Fragment key={item.id}>
+            <Fragment key={item.id}>
               <InputRow item={{ ...item, parentId, padding }} key={item.id} />
               {children}
-            </React.Fragment>
+            </Fragment>
           );
         }
         return (
-          <React.Fragment key={item.id}>
+          <Fragment key={item.id}>
             <tr
               onDoubleClick={() => editMode(item)}
               style={{ cursor: `${edit ? "auto" : "pointer"}` }}
@@ -200,7 +214,7 @@ const Table = () => {
               </td>
             </tr>
             {children}
-          </React.Fragment>
+          </Fragment>
         );
       });
     };
