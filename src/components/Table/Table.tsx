@@ -142,7 +142,7 @@ const Table = () => {
         </td>
         <td className={style.editTd}>
           <input
-            data-key="rowName"
+            data-key="estimatedProfit"
             onChange={handleChange}
             onBlur={handleBlur}
             type="text"

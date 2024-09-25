@@ -19,7 +19,32 @@ const state: IInitialState = {
   data: [],
   loading: true,
 };
-
+async function fetchDataWithRetry<T>(url: string, option: RequestInit) {
+  let retry = 0;
+  while (retry < 3) {
+    try {
+      const response = await Promise.race([
+        fetch(url, option),
+        new Promise<Response>((_, reject) =>
+          setTimeout(() => reject(new Error("Превышено время ожидания")), 3000)
+        ),
+      ]);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Что-то пошло не так!");
+      }
+      const data: T = await response.json();
+      return data;
+    } catch (error) {
+      retry++;
+      if (retry === 3) {
+        const errorMessage = (error as Error).message || "Что-то пошло не так!";
+        throw new Error(`Ошибка после ${retry} попыток: ${errorMessage}`);
+      }
+    }
+  }
+  throw new Error("Не удалось получить ответ от сервера после всех попыток :(");
+}
 export const GET_DATA = createAsyncThunk<
   OutlayRowRequest[],
   undefined,
@@ -28,16 +53,14 @@ export const GET_DATA = createAsyncThunk<
   }
 >("page/GET_DATA", async (_, { rejectWithValue }) => {
   try {
-    const response = await fetch(
-      `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/list`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
+    const url = `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/list`;
+    const option = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const data = await fetchDataWithRetry<OutlayRowRequest[]>(url, option);
     return data;
   } catch (error) {
     return rejectWithValue(`${error}`);
@@ -51,17 +74,15 @@ export const CREATE_ROW = createAsyncThunk<
   }
 >("page/CREATE_ROW", async ({ requestData }, { rejectWithValue }) => {
   try {
-    const response = await fetch(
-      `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/create`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      }
-    );
-    const data = await response.json();
+    const url = `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/create`;
+    const option = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    };
+    const data = await fetchDataWithRetry<RequestData>(url, option);
     return data;
   } catch (error) {
     return rejectWithValue(`${error}`);
@@ -75,17 +96,15 @@ export const UPDATE_ROW = createAsyncThunk<
   }
 >("page/UPDATE_ROW", async ({ rID, requestData }, { rejectWithValue }) => {
   try {
-    const response = await fetch(
-      `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/${rID}/update`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      }
-    );
-    const data = await response.json();
+    const url = `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/${rID}/update`;
+    const option = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    };
+    const data = await fetchDataWithRetry<RequestData>(url, option);
     return data;
   } catch (error) {
     return rejectWithValue(`${error}`);
@@ -100,16 +119,14 @@ export const DELETE_ROW = createAsyncThunk<
   }
 >("page/DELETE_ROW", async ({ rID }, { rejectWithValue }) => {
   try {
-    const response = await fetch(
-      `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/${rID}/delete`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
+    const url = `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/${rID}/delete`;
+    const option = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const data = await fetchDataWithRetry<RequestData>(url, option);
     return data;
   } catch (error) {
     return rejectWithValue(`${error}`);
