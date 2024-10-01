@@ -4,7 +4,8 @@ import { updateGlobalState } from "../utils/updateGlobalState";
 import { RequestData } from "../type/RequestData";
 
 //const ID = { id: 128698, rowName: "d7c41e01-8b92-499c-b029-c9e95980064e" };
-const ID = { id: 130026, rowName: "ff3eedcd-834f-411f-a124-f665981b70b2" };
+//const ID = { id: 130026, rowName: "ff3eedcd-834f-411f-a124-f665981b70b2" };
+const ID = { id: 15927, rowName: "2riCxZvL3sMd9Oj-Ywdro-ujr0PDC5OkRhDJfAf2" }
 export interface ICountLessons {
   [key: string]: number;
 }
@@ -53,7 +54,7 @@ export const GET_DATA = createAsyncThunk<
   }
 >("page/GET_DATA", async (_, { rejectWithValue }) => {
   try {
-    const url = `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/list`;
+    const url = `https://seven-winds-studio-server.vercel.app/v1/outlay-rows/entity/${ID.id}/row/list`
     const option = {
       method: "GET",
       headers: {
@@ -74,7 +75,7 @@ export const CREATE_ROW = createAsyncThunk<
   }
 >("page/CREATE_ROW", async ({ requestData }, { rejectWithValue }) => {
   try {
-    const url = `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/create`;
+    const url = `https://seven-winds-studio-server.vercel.app/v1/outlay-rows/entity/${ID.id}/row/create`
     const option = {
       method: "POST",
       headers: {
@@ -96,7 +97,7 @@ export const UPDATE_ROW = createAsyncThunk<
   }
 >("page/UPDATE_ROW", async ({ rID, requestData }, { rejectWithValue }) => {
   try {
-    const url = `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/${rID}/update`;
+    const url = `https://seven-winds-studio-server.vercel.app/v1/outlay-rows/entity/${ID.id}/row/${rID}/update`
     const option = {
       method: "POST",
       headers: {
@@ -119,7 +120,7 @@ export const DELETE_ROW = createAsyncThunk<
   }
 >("page/DELETE_ROW", async ({ rID }, { rejectWithValue }) => {
   try {
-    const url = `http://185.244.172.108:8081/v1/outlay-rows/entity/${ID.id}/row/${rID}/delete`;
+    const url = `https://seven-winds-studio-server.vercel.app/v1/outlay-rows/entity/${ID.id}/row/${rID}/delete`
     const option = {
       method: "DELETE",
       headers: {
@@ -216,7 +217,7 @@ export const { SET_LOADING } = slice.actions;
 export default slice.reducer;
 
 // fetch(
-//     " http://185.244.172.108:8081/v1/outlay-rows/entity/create",
+//     "https://seven-winds-studio-server.vercel.app/v1/outlay-rows/entity/create",
 //     {
 //       method: "POST",
 //       headers: {

@@ -5,41 +5,45 @@ export function updateGlobalState(
   rID?: number | null,
   current?: OutlayRowRequest
 ): OutlayRowRequest[] {
+  const result: OutlayRowRequest[] = [];
+  if (data.length === 0 && current) {
+    result.push({ ...current, child: [] });
+  } else {
+    for (let item of data) {
+      let updatedItem = item;
+      const foundItemIndex = changed.findIndex(
+        (curr) => curr.id === updatedItem.id
+      );
 
-    const result: OutlayRowRequest[] = [];
-    if (data.length === 0 && current) {
-      result.push({...current, child: []})
-    } else {
-      for (let item of data) {
-        let updatedItem = item;
-        const foundItemIndex = changed.findIndex((curr) => curr.id === updatedItem.id);
-  
-        if (foundItemIndex > -1) {
-          const foundItem = changed[foundItemIndex];
-          changed.splice(foundItemIndex, 1);
-          updatedItem = { ...updatedItem, ...foundItem };
-        }
-  
-        if (rID && updatedItem.id === rID) {
-          continue; 
-        }
-  
-        if (current && updatedItem.id === current.parentId) {
-          updatedItem = { ...updatedItem, child: [...(updatedItem.child || []), current] };
-        }
-  
-        if (updatedItem.child && updatedItem.child.length) {
-          updatedItem = { ...updatedItem, child: updateGlobalState(updatedItem.child, changed, rID, current) };
-        }
-  
-        result.push(updatedItem);
+      if (foundItemIndex > -1) {
+        const foundItem = changed[foundItemIndex];
+        changed.splice(foundItemIndex, 1);
+        updatedItem = { ...updatedItem, ...foundItem };
       }
+
+      if (rID && updatedItem.id === rID) {
+        continue;
+      }
+
+      if (current && updatedItem.id === current.parentId) {
+        updatedItem = {
+          ...updatedItem,
+          child: [...(updatedItem.child || []), current],
+        };
+      }
+
+      if (updatedItem.child && updatedItem.child.length) {
+        updatedItem = {
+          ...updatedItem,
+          child: updateGlobalState(updatedItem.child, changed, rID, current),
+        };
+      }
+
+      result.push(updatedItem);
     }
-    return result;
-  };
-
-
-
+  }
+  return result;
+}
 
 // const deleteItem = (
 //   items: OutlayRowRequest[],
@@ -55,7 +59,6 @@ export function updateGlobalState(
 //     return true;
 //   });
 // };
-
 
 // const findAndAddToChild = (
 //   items: OutlayRowRequest[],
@@ -103,7 +106,6 @@ export function updateGlobalState(
 
 //   let newData = updateGlobalData(data, changed);
 
-
 //   if (rID) {
 //     newData = deleteItem(newData, rID);
 //   }
@@ -114,5 +116,3 @@ export function updateGlobalState(
 
 //   return newData;
 // }
-
-

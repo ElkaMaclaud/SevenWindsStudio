@@ -63,7 +63,7 @@ const Table = () => {
       estimatedProfit: item.estimatedProfit,
     });
     const inputRef = useRef<HTMLInputElement>(null);
-    
+
     useEffect(() => {
       if (inputRef.current) {
         inputRef.current.focus();
@@ -80,6 +80,11 @@ const Table = () => {
       setValue((prev) => ({ ...prev, [key!]: e.target.value }));
     };
 
+    const handleFocus = (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.value === "0") {
+        e.target.value = "";
+      }
+    };
     // Чтобы клиент понимал, что поле заполнится 0 в случае пустого поля
     const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
       setValue((prev) => ({
@@ -115,6 +120,7 @@ const Table = () => {
         </td>
         <td className={style.editTd}>
           <input
+            onFocus={handleFocus}
             data-key="salary"
             onChange={handleChange}
             onBlur={handleBlur}
@@ -124,6 +130,7 @@ const Table = () => {
         </td>
         <td className={style.editTd}>
           <input
+            onFocus={handleFocus}
             data-key="equipmentCosts"
             onChange={handleChange}
             onBlur={handleBlur}
@@ -133,6 +140,7 @@ const Table = () => {
         </td>
         <td className={style.editTd}>
           <input
+            onFocus={handleFocus}
             data-key="overheads"
             onChange={handleChange}
             onBlur={handleBlur}
@@ -142,6 +150,7 @@ const Table = () => {
         </td>
         <td className={style.editTd}>
           <input
+            onFocus={handleFocus}
             data-key="estimatedProfit"
             onChange={handleChange}
             onBlur={handleBlur}
@@ -238,9 +247,9 @@ const Table = () => {
         <tbody>{createTableRender(list)}</tbody>
       </table>
       {loading && (
-        <div className={style.spinnerWrapper}>
+        <Fragment>
           <Spinner />
-        </div>
+        </Fragment>
       )}
     </div>
   );
