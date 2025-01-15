@@ -2,7 +2,7 @@ import { OutlayRowRequest } from "../type/ProjectType";
 
 export const projects: Array<{name: string, active?: boolean}> = [
   {name: "По проекту"},
-  {name: "Щбъекты"},
+  {name: "Объекты"},
   {name: "РД"},
   {name: "МТО"},
   {name: "График"},
