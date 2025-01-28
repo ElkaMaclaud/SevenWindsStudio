@@ -1,12 +1,16 @@
 import { OutlayRowRequest } from "../type/ProjectType";
+export interface IProject {
+  name: string;
+  selected?: boolean;
+}
 
-export const projects: Array<{name: string, active?: boolean}> = [
+export const projects: IProject[] = [
   {name: "По проекту"},
   {name: "Объекты"},
   {name: "РД"},
   {name: "МТО"},
   {name: "График"},
-  {name: "СМР", active: true},
+  {name: "СМР", selected: true},
   {name: "МИМ"},
   {name: "Рабочие"},
   {name: "Капвложения"},

@@ -1,0 +1,19 @@
+.projects {
+    padding: 20px;
+    height: 40px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 20px;
+
+    &:hover {
+      @extend .projects;
+      background-color: #999;
+      transition: background-color .3s ease-in-out
+    }
+
+    &_active {
+      @extend .projects;
+      background-color: #999;
+    }
+  }
